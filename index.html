@@ -404,11 +404,6 @@
  <body> <!-- Toast --> 
   <div id="toast" class="toast"></div> <!-- Header --> 
   <header> 
-   <section class="trust-bar">
-  <div>✔ <span id="totalOrders">0</span> عملية شحن</div>
-  <div>✔ <span id="totalCustomers">0</span> عميل سعيد</div>
-  <div>✔ دعم فني 24/7</div>
-</section>
    <div class="header-wrap container"> 
     <div class="brand secret" id="brand" title="اضغط 5 مرات للدخول للأدمن"> 
      <div class="brand-logo" id="brandLogo"></div> 
@@ -461,10 +456,6 @@
     </div> 
    </div> 
 </button>
-   <section class="section container" id="featuredSection"> 
-    <h2>🔥 الأكثر مبيعًا</h2> 
-    <div id="featuredGrid" class="grid"></div> 
-   </section> 
    <section id="gamesSection" class="section container"> 
     <div id="gamesGrid" class="grid"></div> 
    </section> 
@@ -1204,32 +1195,6 @@ updateTrustStats();
   if(ordersEl) ordersEl.textContent = totalOrders;
   if(customersEl) customersEl.textContent = uniqueCustomers;
 }
- 
-renderFeatured();
-
- function renderFeatured(){
-  const grid = document.getElementById("featuredGrid");
-  if(!grid) return;
-
-  grid.innerHTML = "";
-
-  const salesCount = {};
-
-  ORDERS.forEach(order=>{
-    if(!salesCount[order.game]){
-      salesCount[order.game] = 0;
-    }
-    salesCount[order.game]++;
-  });
-
-  const sortedGames = Object.entries(salesCount)
-    .sort((a,b)=> b[1] - a[1])
-    .slice(0,3);
-
-  if(sortedGames.length === 0){
-    grid.innerHTML = `<div class="muted">لا توجد طلبات بعد</div>`;
-    return;
-  }
 
   sortedGames.forEach(([name,count])=>{
     const game = GAMES[name] || APPS[name];
@@ -1342,7 +1307,6 @@ const packs = source.packs || [];
   ORDERS.push(order);
 storage.set("ebx_orders", ORDERS);
 updateTrustStats();
-renderFeatured();
 
   // Loader
   const loader = $("#loader-"+idx);
