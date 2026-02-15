@@ -1,9 +1,22 @@
 <!doctype html>
 <html lang="ar" dir="rtl"> 
  <head> 
+ <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
   <meta charset="utf-8"> 
   <meta name="viewport" content="width=device-width, initial-scale=1"> 
-  <title>EBX GAME STORE</title> 
+  <title>ICLOUD</title> 
+  <meta name="description" content="EBX Store - متجر شحن ألعاب رقمية في مصر بأفضل الأسعار ودعم فوري عبر واتساب.">
+
+<meta name="keywords" content="شحن ألعاب, متجر ألعاب مصر, شحن PUBG, شحن Free Fire, EBX Store">
+
+<meta property="og:title" content="EBX Store - شحن ألعاب رقمية في مصر">
+<meta property="og:description" content="اشحن ألعابك فورًا بأفضل الأسعار في مصر. دعم مباشر عبر واتساب.">
+<meta property="og:image" content="https://ebx-game-store.vercel.app/assets/images/logo.png">
+<meta property="og:type" content="website">
+
+<link rel="canonical" href="https://yourdomain.com/">
   <meta name="theme-color" content="#0A0A0A"> <!-- =======================
   Global Styles (Neon Dark)
 ======================== --> 
@@ -397,6 +410,7 @@
   font-weight:500 !important;
   width:65% !important;
   margin:10px auto 0 !important;
+
   display:block;
 }
 </style> 
@@ -406,10 +420,10 @@
   <header> 
    <div class="header-wrap container"> 
     <div class="brand secret" id="brand" title="اضغط 5 مرات للدخول للأدمن"> 
-     <div class="brand-logo" id="brandLogo"></div> 
+     <img src="assets/images/logo.png" class="brand-logo"> 
      <div class="brand-name" id="brandName">
-      EBX GAME STORE
-     </div> 
+  ICLOUD
+</div>
     </div> <button class="hamburger" id="openDrawer" aria-label="افتح القائمة"><span></span></button> 
    </div> <!-- Ticker --> 
    <div class="ticker"> 
@@ -422,10 +436,10 @@
    <div class="drawer-panel" role="menu" aria-label="القائمة الجانبية"> 
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px"> 
      <div class="brand"> 
-      <div class="brand-logo" id="brandLogoSmall"></div> 
+      <img src="assets/images/logo.png" class="brand-logo">
       <div class="brand-name">
-       EBX MENU
-      </div> 
+  ICLOUD MENU
+</div>
      </div> <button class="btn btn-danger" id="closeDrawerBtn">إغلاق</button> 
     </div> 
     <nav class="nav-list" style="margin-top:14px"> <a class="nav-item" href="#home"><span>الرئيسية</span><span class="pill">صفحة البداية</span></a> <a class="nav-item" href="#games"><span>الألعاب</span><span class="pill">اختيار اللعبة</span></a> <a class="nav-item" href="#payments"><span>طرق الدفع</span><span class="pill">آمنة 100%</span></a> <a class="nav-item" id="supportLink" href="#"><span>خدمة العملاء</span><span class="pill">واتساب مباشر</span></a> 
@@ -487,7 +501,7 @@
   <footer> 
    <div class="container" style="display:grid;gap:8px"> 
     <div>
-     © <span id="year"></span> EBX GAME STORE — جميع الحقوق محفوظة.
+     © <span id="year"></span> ICLOUD — جميع الحقوق محفوظة.
     </div> 
     <div style="display:flex;gap:10px;flex-wrap:wrap"> <a href="#" id="supportLink2">تواصل معنا (واتساب)</a> 
     </div> 
@@ -620,7 +634,7 @@ const defaultSettings = {
   logoData:null,
   adminPass:"01004167961" // default admin pass (can be changed by admin)
 };
-let SETTINGS = storage.get("ebx_settings", defaultSettings);
+let SETTINGS = storage.get("icloud_settings", defaultSettings);
 
  function showGames(){
   document.getElementById("gamesSection").style.display = "block";
@@ -1073,13 +1087,18 @@ function applySettingsToUI(){
   document.documentElement.style.setProperty('--glow-cta', `0 0 20px ${hexToRgba(SETTINGS.cta||defaultSettings.cta, .35)}`);
   document.documentElement.style.setProperty('--font-family', SETTINGS.font || defaultSettings.font);
   // brand logo
-  const logoEls = [$("#brandLogo"), $("#brandLogoSmall")];
-  if(SETTINGS.logoData){
-    logoEls.forEach(el=>el.style.backgroundImage = `url(${SETTINGS.logoData})`);
-    logoEls.forEach(el=>el.style.backgroundSize="cover");
-  } else {
-    logoEls.forEach(el=>el.style.backgroundImage = '');
-  }
+  const logoEls = [$("#brandLogo"), $("#brandLogoSmall")].filter(Boolean);
+
+if(SETTINGS.logoData){
+  logoEls.forEach(el=>{
+    el.style.backgroundImage = `url(${SETTINGS.logoData})`;
+    el.style.backgroundSize = "cover";
+  });
+} else {
+  logoEls.forEach(el=>{
+    el.style.backgroundImage = '';
+  });
+}
   setSupportLinks();
 }
 function hexToRgba(hex, a=1){
@@ -1195,6 +1214,32 @@ updateTrustStats();
   if(ordersEl) ordersEl.textContent = totalOrders;
   if(customersEl) customersEl.textContent = uniqueCustomers;
 }
+ 
+renderFeatured();
+
+ function renderFeatured(){
+  const grid = document.getElementById("featuredGrid");
+  if(!grid) return;
+
+  grid.innerHTML = "";
+
+  const salesCount = {};
+
+  ORDERS.forEach(order=>{
+    if(!salesCount[order.game]){
+      salesCount[order.game] = 0;
+    }
+    salesCount[order.game]++;
+  });
+
+  const sortedGames = Object.entries(salesCount)
+    .sort((a,b)=> b[1] - a[1])
+    .slice(0,3);
+
+  if(sortedGames.length === 0){
+    grid.innerHTML = `<div class="muted">لا توجد طلبات بعد</div>`;
+    return;
+  }
 
   sortedGames.forEach(([name,count])=>{
     const game = GAMES[name] || APPS[name];
@@ -1284,7 +1329,7 @@ window.cancelPack = (idx)=>{
 
 window.confirmPack = async (gEnc, idx)=>{
   const gameName = decodeURIComponent(gEnc);
-  const source = GAMES[gameName] || APPS[appName];
+  const source = GAMES[gameName] || APPS[gameName];
 const packs = source.packs || [];
   const pack = packs[idx];
   const idInput = $("#pid-"+idx);
@@ -1307,6 +1352,7 @@ const packs = source.packs || [];
   ORDERS.push(order);
 storage.set("ebx_orders", ORDERS);
 updateTrustStats();
+renderFeatured();
 
   // Loader
   const loader = $("#loader-"+idx);
@@ -1682,14 +1728,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "ebx-store.firebaseapp.com",
-  projectId: "ebx-store",
-  storageBucket: "ebx-store.firebasestorage.app",
-  messagingSenderId: "66778288784",
-  appId: "1:66778288784:web:835bcccebcaac69be7e15"
-};
 
+apiKey: "AIzaSyD6DP54eIY_L4ZY05Uwa2rivBDylq6G0BQ", authDomain: "ebx-store.firebaseapp.com", projectId: "ebx-store", storageBucket: "ebx-store.firebasestorage.app", messagingSenderId: "66778288784", appId: "1:66778288784:web: 835bcccebcacac69be7e15", measurementId: "G-4GJ69JLHGM" };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
